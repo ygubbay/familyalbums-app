@@ -3,39 +3,44 @@ import { useHistory } from "react-router-dom";
 import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import { onError } from "../libs/errorLib";
-import config from "../config";
 import "./NewAlbum.css";
 import { API } from "aws-amplify";
+import { useAppContext } from "../libs/contextLib";
 
 export default function NewNote() {
   const file = useRef(null);
   const history = useHistory();
-  const [content, setContent] = useState("");
+  const [album_name, setAlbumName] = useState("");
+  const [album_year, setAlbumYear] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { userEmail } = useAppContext();
+
+  var currentYear = new Date().getFullYear(), years = [];
+  var startYear = currentYear;  
+  while ( startYear > currentYear - 90 ) {
+      years.push(startYear--);
+  } 
+  
+  const listItems = years.map((number) => 
+
+<option value={number} key={number}>{number}</option>
+  );
 
   function validateForm() {
-    return content.length > 0;
-  }
-
-  function handleFileChange(event) {
-    file.current = event.target.files[0];
+    return album_name.length > 0;
   }
 
   async function handleSubmit(event) {
     event.preventDefault();
   
-    if (file.current && file.current.size > config.MAX_ATTACHMENT_SIZE) {
-      alert(
-        `Please pick a file smaller than ${config.MAX_ATTACHMENT_SIZE /
-          1000000} MB.`
-      );
-      return;
-    }
+    
   
     setIsLoading(true);
   
     try {
-      await createNote({ content });
+
+      var album = { Name: album_name, Year: album_year, Owner: userEmail };  
+      await createAlbum(album);
       history.push("/");
     } catch (e) {
       onError(e);
@@ -43,28 +48,36 @@ export default function NewNote() {
     }
   }
   
-  function createNote(note) {
+  function createAlbum(album) {
     return API.post("albums", "/albums", {
       headers: { "Content-Type": "application/x-www-form-urlencoded", 
       Accept: "application/json"
       },
-      body: { Name: 'new_album_name', Year: 2000, Owner: 'dummyOwner' }
+      body: album
     });
   }
 
   return (
     <div className="NewNote">
       <form onSubmit={handleSubmit}>
-        <FormGroup controlId="content">
+        <FormGroup controlId="album_name">
           <FormControl
-            value={content}
-            componentClass="textarea"
-            onChange={e => setContent(e.target.value)}
+            value={album_name}
+            componentClass="input"
+            placeholder="Album name"
+            onChange={e => setAlbumName(e.target.value)}
           />
         </FormGroup>
-        <FormGroup controlId="file">
-          <ControlLabel>Attachment</ControlLabel>
-          <FormControl onChange={handleFileChange} type="file" />
+        <FormGroup controlId="album_year">
+          <FormControl
+            value={album_year}
+            componentClass="select"
+            placeholder="Album year"
+            onChange={e => setAlbumYear(e.target.value)}
+            onSelect={e => setAlbumYear(e.target.value)}
+          >
+              {listItems}
+          </FormControl>
         </FormGroup>
         <LoaderButton
           block

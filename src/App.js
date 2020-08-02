@@ -12,6 +12,7 @@ function App() {
 
   const [isAuthenticated, userHasAuthenticated] = useState(false);
   const [isAuthenticating, setIsAuthenticating] = useState(true);
+  const [userEmail, setUserEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const history = useHistory();
 
@@ -21,8 +22,17 @@ function App() {
   
   async function onLoad() {
     try {
-      await Auth.currentSession();
-      userHasAuthenticated(true);
+      await Auth.currentSession()
+      .then(data => {
+        console.log(data);
+        const email = data.idToken.payload.email;
+        
+        console.log("User: ", email);
+        userHasAuthenticated(true);
+        setUserEmail(email);
+      })
+      .catch(err => console.log(err));
+      
     }
     catch(e) {
       if (e !== 'No current user') {
@@ -53,7 +63,14 @@ function App() {
         <Navbar.Collapse>
           <Nav pullRight>
             {isAuthenticated
-              ? <NavItem onClick={handleLogout}>Logout</NavItem>
+              ? <><LinkContainer to="/albums/new">
+                    <NavItem>New album</NavItem>
+                  </LinkContainer>
+                  <LinkContainer to="/albums/view">
+                    <NavItem>View albums</NavItem>
+                  </LinkContainer>
+                  <NavItem onClick={handleLogout}>Logout</NavItem>
+                </>
               : <>
                   <LinkContainer to="/signup">
                     <NavItem>Signup</NavItem>
@@ -67,7 +84,7 @@ function App() {
         </Navbar.Collapse>
       </Navbar>
       <AppContext.Provider
-        value={{ isAuthenticated, userHasAuthenticated }}
+        value={{ isAuthenticated, userHasAuthenticated, userEmail, setUserEmail }}
       >
         <Routes />
       </AppContext.Provider>
