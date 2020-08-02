@@ -1,5 +1,8 @@
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+##TODO
+If not logged in to NewAlbum -> dont allow to get to page via url 
+If doesn't select an album year, select latest year by default
+View albums
 
 ## Available Scripts
 
