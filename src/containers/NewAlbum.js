@@ -11,7 +11,7 @@ export default function NewNote() {
   const file = useRef(null);
   const history = useHistory();
   const [album_name, setAlbumName] = useState("");
-  const [album_year, setAlbumYear] = useState("");
+  
   const [isLoading, setIsLoading] = useState(false);
   const { userEmail } = useAppContext();
 
@@ -20,7 +20,7 @@ export default function NewNote() {
   while ( startYear > currentYear - 90 ) {
       years.push(startYear--);
   } 
-  
+  const [album_year, setAlbumYear] = useState(currentYear);
   const listItems = years.map((number) => 
 
 <option value={number} key={number}>{number}</option>
@@ -59,6 +59,7 @@ export default function NewNote() {
 
   return (
     <div className="NewNote">
+      <h2>New Album</h2>
       <form onSubmit={handleSubmit}>
         <FormGroup controlId="album_name">
           <FormControl
