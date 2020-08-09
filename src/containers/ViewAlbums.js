@@ -1,13 +1,13 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { Table } from "react-bootstrap";
+import { Table, Button } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import { onError } from "../libs/errorLib";
-import "./ViewAlbum.css";
+import "./ViewAlbums.css";
 import { API, sectionFooterSecondaryContent } from "aws-amplify";
 import { useAppContext } from "../libs/contextLib";
 
-export default function ViewAlbum() {
+export default function ViewAlbums() {
   const file = useRef(null);
   const history = useHistory();
   const [albums, setAlbums] = useState([]);
@@ -31,12 +31,13 @@ export default function ViewAlbum() {
 
             setAlbums(response);
             var albcoll = [];
-            response.map((alb) => {
+            response.map((alb, ind) => {
 
-                albcoll.push(<tr>
+                albcoll.push(<tr key={'alb' + ind}>
                                 <td>{alb.Year}</td>
                                 <td>{alb.Name}</td>
                                 <td>{alb.Owner}</td>
+                                <td><Button onClick={() => viewAlbum(alb.Id)} variant="outline-primary">Add pictures</Button></td>
                                 </tr>);
 
             });
@@ -57,7 +58,10 @@ export default function ViewAlbum() {
     
   }
   
-   
+   function viewAlbum(album_id)
+   {
+    history.push('/albums/' + album_id);
+   }
 
    function getAlbums() 
    {
@@ -74,7 +78,7 @@ export default function ViewAlbum() {
   return (
 
     
-    <div className="ViewAlbum">
+    <div className="ViewAlbums">
       <h2>Albums</h2>
       <Table striped bordered hover>
         <thead>
@@ -82,6 +86,7 @@ export default function ViewAlbum() {
             <th>Year</th>
             <th>Name</th>
             <th>Owner</th>
+            <th>Actions</th>
             </tr>
         </thead>
         <tbody>

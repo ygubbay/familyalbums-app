@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import { useParams } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import { onError } from "../libs/errorLib";
@@ -40,7 +41,7 @@ export default function AddPictures() {
   const [isLoading, setIsLoading] = useState(false);
   const { userEmail } = useAppContext();
 
-  
+  let { id } = useParams();
 
   function validateForm() {
     return album_name.length > 0;
@@ -86,10 +87,13 @@ export default function AddPictures() {
     <div className="NewNote">
       <h2>Add Pictures</h2>
       
+      <div>
+      <h3>ID: {id}</h3>
+    </div>
       <p className="note">Note : your browser will process the zip file, don't choose a file too big !</p>
         <input type="file" id="file" name="file" multiple onChange={onFileChange} /><br />
 
-        <div id="result_block" class="hidden">
+        <div id="result_block" className="hidden">
         <h3>Content :</h3>
         <div id="result"></div>
         </div>
