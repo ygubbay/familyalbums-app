@@ -6,6 +6,7 @@ import Login from "./containers/Login";
 import Signup from "./containers/Signup";
 import NewNote from "./containers/NewAlbum";
 import ViewAlbum from "./containers/ViewAlbum";
+import AddPictures from "./containers/AddPictures";
 
 export default function Routes() {
   return (
@@ -24,6 +25,9 @@ export default function Routes() {
       </Route>
       <Route exact path="/albums/view">
         <ViewAlbum />
+      </Route>
+      <Route exact path="/albums/addpictures">
+        <AddPictures />
       </Route>
       <Route>
         <NotFound />
