@@ -1,8 +1,25 @@
 
 ##TODO
 If not logged in to NewAlbum -> dont allow to get to page via url 
-If doesn't select an album year, select latest year by default
-View albums
+Multi-file upload -> upload files in parallel with max throttle
+Add dynamodb file_upload:
+ partition_key=upload_albumname, 
+ sub=s3_keyname, 
+ status=not_uploaded
+ owner
+ album_name
+
+Attach albums/addpictures to come from album_name (viewalbums) 
+AddPictures -> 
+    add nice file upload feedback 
+    -> list all files in table and show status 
+    -> summary status of all uploads
+
+s3Job -> move file to album folder in another s3 bucket
+s3Job -> create thumbnail
+
+
+
 
 ## Available Scripts
 
