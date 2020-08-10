@@ -37,7 +37,7 @@ export default function ViewAlbums() {
                                 <td>{alb.Year}</td>
                                 <td>{alb.Name}</td>
                                 <td>{alb.Owner}</td>
-                                <td><Button onClick={() => viewAlbum(alb.Id)} variant="outline-primary">Add pictures</Button></td>
+                                <td><Button onClick={() => viewAlbum(alb.Partition_Key)} variant="outline-primary">view</Button></td>
                                 </tr>);
 
             });

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
@@ -6,6 +6,8 @@ import { onError } from "../libs/errorLib";
 import "./NewAlbum.css";
 import { useAppContext } from "../libs/contextLib";
 import { Storage } from "aws-amplify";
+import { API } from "aws-amplify";
+import { Table, Button } from "react-bootstrap";
 
 
 Object.defineProperty(Date.prototype, 'YYYYMMDDHHMMSS', {
@@ -37,6 +39,10 @@ export default function AddPictures() {
   const file = useRef(null);
   const history = useHistory();
   const [album_name, setAlbumName] = useState("");
+  const [album, setAlbum] = useState([]);
+  const [isAddPictures, setIsAddPictures] = useState(false);
+    
+
   
   const [isLoading, setIsLoading] = useState(false);
   const { userEmail } = useAppContext();
@@ -47,6 +53,44 @@ export default function AddPictures() {
     return album_name.length > 0;
   }
 
+  function getAlbum(partition_key) 
+   {
+        var path = "/album/${partition_key}";
+
+        return API.get("albums", "/album/" + partition_key, {
+            headers: { "Content-Type": "application/x-www-form-urlencoded", 
+            Accept: "application/json"
+            }
+        });
+   }
+
+  useEffect(() => {
+    onLoad();
+  }, []);
+  
+  async function onLoad() {
+    try {
+        console.log('onLoad');
+      await  getAlbum(id).then( (response) =>
+        {
+            console.log('response now');
+            console.log(JSON.stringify(response));
+            
+            setAlbum(response);
+
+            setIsLoading(false);
+        })
+        .catch(err => console.log(err));
+      
+    }
+    catch(e) {
+      if (e !== 'No current user') {
+        onError(e);
+      }
+    }
+  
+    
+  }
   
   
   async function onFileChange(event) {
@@ -76,27 +120,39 @@ export default function AddPictures() {
         onError(e);
         setIsLoading(false);
       }
-
     }
-    
-
-
   }
+
+  var addPictures = !isAddPictures ? <Button onClick={() => setIsAddPictures(true)} variant="outline-primary">Add pictures</Button>: 
+      <div>
+        <h3>Add pictures</h3>
+
+        <Button onClick={() => setIsAddPictures(false)} variant="outline-primary">Close</Button>
+        <p className="note">Note : your browser will process the zip file, don't choose a file too big !</p>
+          <input type="file" id="file" name="file" multiple onChange={onFileChange} /><br />
+
+          <div id="result_block" className="hidden">
+            <h3>Content :</h3>
+            <div id="result"></div>
+          </div>
+        </div>;
 
   return (
     <div className="NewNote">
-      <h2>Add Pictures</h2>
+      <h2>Album - {album.Name}</h2>
       
       <div>
-      <h3>ID: {id}</h3>
-    </div>
-      <p className="note">Note : your browser will process the zip file, don't choose a file too big !</p>
-        <input type="file" id="file" name="file" multiple onChange={onFileChange} /><br />
+      <div>Year: {album.Year}</div>
+      <div>Owner: {album.Owner}</div>
+      <div>Date created: {album.DateCreated}</div>
 
-        <div id="result_block" className="hidden">
-        <h3>Content :</h3>
-        <div id="result"></div>
-        </div>
+    </div>
+    <hr />
+
+     {addPictures}
+
+
+      
     </div>
   );
 }
