@@ -92,6 +92,16 @@ export default function AddPictures() {
     
   }
   
+
+  function addUpload(uploaded_file)
+  {
+    return API.post("albums", "/albums/uploads", {
+      headers: { "Content-Type": "application/x-www-form-urlencoded", 
+      Accept: "application/json"
+      },
+      body: uploaded_file
+    });
+  }
   
   async function onFileChange(event) {
     console.log(event.target.files)
@@ -110,9 +120,27 @@ export default function AddPictures() {
 
       console.log('uploading: ', current_file);
       try {
-        s3Upload(current_file).then((response) => {
+        s3Upload(current_file)
+        .then((response) => {
           console.log('uploaded', current_file, response);
+          
+          let upload = { OriginalFilename: current_file.name, 
+                          Filename: response, 
+                          AlbumKey: id,
+                          LastModifiedDate: current_file.lastModifiedDate,
+                          Size: current_file.size,
+                          Type: current_file.type  };
+
+          return upload;
         })
+        .then((upload) => {
+
+          console.log("upload info to aws");
+          return addUpload(upload)
+        })
+        .then((upload_response) => {
+            console.log("Upload info saved");
+        });
     
         
         
