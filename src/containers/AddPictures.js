@@ -24,16 +24,6 @@ Object.defineProperty(Date.prototype, 'YYYYMMDDHHMMSS', {
              pad2(this.getSeconds());
   }
 });
-export async function s3Upload(file) {
-
-  const date_prefix = new Date().YYYYMMDDHHMMSS();
-  const filename = `${date_prefix}_${file.name}`;
-  const stored = await Storage.vault.put(filename, file, {
-    contentType: file.type,
-  });
-
-  return stored.key;
-}
 
 export default function AddPictures() {
   const file = useRef(null);
@@ -49,10 +39,18 @@ export default function AddPictures() {
 
   let { id } = useParams();
 
-  function validateForm() {
-    return album_name.length > 0;
-  }
+  async function s3Upload(key_prefix, file) {
 
+    const date_prefix = new Date().YYYYMMDDHHMMSS();
+    const filename = `${date_prefix}_${file.name}`;
+    const stored = await Storage.put(key_prefix + "/" + filename, file, {
+      level: 'public',
+      contentType: file.type,
+    });
+  
+    return stored.key;
+  }
+ 
   function getAlbum(partition_key) 
    {
         var path = "/album/${partition_key}";
@@ -120,8 +118,12 @@ export default function AddPictures() {
 
       console.log('uploading: ', current_file);
       try {
-        s3Upload(current_file)
+
+        const album_prefix = id.substring(0, 4) + "/" + id.substring(5);
+        
+        s3Upload(album_prefix, current_file)
         .then((response) => {
+          
           console.log('uploaded', current_file, response);
           
           let upload = { OriginalFilename: current_file.name, 
@@ -139,7 +141,8 @@ export default function AddPictures() {
           return addUpload(upload)
         })
         .then((upload_response) => {
-            console.log("Upload info saved");
+
+          console.log("Upload info saved");
         });
     
         
