@@ -28,8 +28,9 @@ Object.defineProperty(Date.prototype, 'YYYYMMDDHHMMSS', {
 export default function AddPictures() {
   const file = useRef(null);
   const history = useHistory();
-  const [album_name, setAlbumName] = useState("");
   const [album, setAlbum] = useState([]);
+  const [photos, setPhotos] = useState({});
+  const [photoRows, setPhotoRows] = useState([]);
   const [isAddPictures, setIsAddPictures] = useState(false);
     
 
@@ -53,14 +54,23 @@ export default function AddPictures() {
  
   function getAlbum(partition_key) 
    {
-        var path = "/album/${partition_key}";
-
+        
         return API.get("albums", "/album/" + partition_key, {
             headers: { "Content-Type": "application/x-www-form-urlencoded", 
             Accept: "application/json"
             }
         });
    }
+
+   function getPhotos(partition_key) 
+   {
+        return API.get("albums", "/uploads/" + partition_key, {
+            headers: { "Content-Type": "application/x-www-form-urlencoded", 
+            Accept: "application/json"
+            }
+        });
+   }
+
 
   useEffect(() => {
     onLoad();
@@ -69,17 +79,43 @@ export default function AddPictures() {
   async function onLoad() {
     try {
         console.log('onLoad');
-      await  getAlbum(id).then( (response) =>
-        {
-            console.log('response now');
-            console.log(JSON.stringify(response));
-            
-            setAlbum(response);
 
-            setIsLoading(false);
-        })
-        .catch(err => console.log(err));
+          await getAlbum(id)
+          .then( (response) =>
+          {
+              console.log('getalbum response');
+              console.log(JSON.stringify(response));
+              
+              setAlbum(response);
+
+          })
+          .catch(err => console.log(err));
       
+          await  getPhotos(id)
+          .then( (response) =>
+          {
+              console.log('getphotos response now');
+              console.log(JSON.stringify(response));
+              
+              setPhotos(response);
+
+              var photoCOLs = [];
+              response.map((p, ind) => {
+
+                photoCOLs.push(<tr key={'photo' + ind}>
+                                <td><img src={'https://ygubbay-photo-albums-thumbnails.s3.eu-west-2.amazonaws.com/public/' + p.Filename} /></td>
+                                <td>{p.PartitionKey}</td>
+                                </tr>);
+
+            });
+
+            setPhotoRows(photoCOLs);
+          })
+          .catch(err => console.log(err));
+
+          
+          setIsLoading(false);
+
     }
     catch(e) {
       if (e !== 'No current user') {
@@ -93,7 +129,7 @@ export default function AddPictures() {
 
   function addUpload(uploaded_file)
   {
-    return API.post("albums", "/albums/uploads", {
+    return API.post("albums", "/uploads", {
       headers: { "Content-Type": "application/x-www-form-urlencoded", 
       Accept: "application/json"
       },
@@ -123,7 +159,7 @@ export default function AddPictures() {
         
         s3Upload(album_prefix, current_file)
         .then((response) => {
-          
+
           console.log('uploaded', current_file, response);
           
           let upload = { OriginalFilename: current_file.name, 
@@ -154,6 +190,9 @@ export default function AddPictures() {
     }
   }
 
+
+ 
+
   var addPictures = !isAddPictures ? <Button onClick={() => setIsAddPictures(true)} variant="outline-primary">Add pictures</Button>: 
       <div>
         <h3>Add pictures</h3>
@@ -176,9 +215,23 @@ export default function AddPictures() {
       <div>Year: {album.Year}</div>
       <div>Owner: {album.Owner}</div>
       <div>Date created: {album.DateCreated}</div>
+      <div>Photos total: {photos.length}</div>
 
     </div>
     <hr />
+
+    <Table striped bordered hover>
+        <thead>
+            <tr>
+            <th>File</th>
+            <th>PartitionKey</th>
+            </tr>
+        </thead>
+        <tbody>
+            {photoRows}
+            
+        </tbody>
+        </Table>
 
      {addPictures}
 

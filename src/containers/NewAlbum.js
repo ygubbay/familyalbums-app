@@ -40,8 +40,13 @@ export default function NewNote() {
     try {
 
       var album = { Name: album_name, Year: album_year, Owner: userEmail };  
-      await createAlbum(album);
-      history.push("/");
+      createAlbum(album)
+      .then((response) => {
+
+        console.log(response);
+        history.push("/");
+      });
+      
     } catch (e) {
       onError(e);
       setIsLoading(false);
