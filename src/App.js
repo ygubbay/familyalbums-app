@@ -83,6 +83,7 @@ function App() {
           </Nav>
         </Navbar.Collapse>
       </Navbar>
+          <div style={{float: "right"}}>{userEmail}</div>
       <AppContext.Provider
         value={{ isAuthenticated, userHasAuthenticated, userEmail, setUserEmail }}
       >

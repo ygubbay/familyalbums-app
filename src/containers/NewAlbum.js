@@ -44,7 +44,7 @@ export default function NewNote() {
       .then((response) => {
 
         console.log(response);
-        history.push("/");
+        history.push("/albums/" + response.Partition_Key);
       });
       
     } catch (e) {

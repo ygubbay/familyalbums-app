@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import { onError } from "../libs/errorLib";
-import "./NewAlbum.css";
+import "./ViewAlbum.css";
 import { useAppContext } from "../libs/contextLib";
 import { Storage } from "aws-amplify";
 import { API } from "aws-amplify";
@@ -32,6 +32,9 @@ export default function AddPictures() {
   const [photos, setPhotos] = useState({});
   const [photoRows, setPhotoRows] = useState([]);
   const [isAddPictures, setIsAddPictures] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploads, setUploads] = useState([]);
+  const [uploadRows, setUploadRows] = useState([]);
     
 
   
@@ -64,11 +67,27 @@ export default function AddPictures() {
 
    function getPhotos(partition_key) 
    {
-        return API.get("albums", "/uploads/" + partition_key, {
+        API.get("albums", "/uploads/" + partition_key, {
             headers: { "Content-Type": "application/x-www-form-urlencoded", 
             Accept: "application/json"
             }
-        });
+        })
+        .then( (response) =>
+          {
+              console.log('getphotos response now');
+              console.log(JSON.stringify(response));
+              
+              setPhotos(response);
+
+              var photoCOLs = [];
+              response.map((p, ind) => {
+
+                photoCOLs.push(<div className="photo-div" key={'photo' + ind} style={{backgroundImage: "url(https://ygubbay-photo-albums-thumbnails.s3.eu-west-2.amazonaws.com/public/" + p.Filename + ")"}}></div>);
+            });
+
+            setPhotoRows(photoCOLs);
+          })
+          .catch(err => console.log(err));
    }
 
 
@@ -91,27 +110,7 @@ export default function AddPictures() {
           })
           .catch(err => console.log(err));
       
-          await  getPhotos(id)
-          .then( (response) =>
-          {
-              console.log('getphotos response now');
-              console.log(JSON.stringify(response));
-              
-              setPhotos(response);
-
-              var photoCOLs = [];
-              response.map((p, ind) => {
-
-                photoCOLs.push(<tr key={'photo' + ind}>
-                                <td><img src={'https://ygubbay-photo-albums-thumbnails.s3.eu-west-2.amazonaws.com/public/' + p.Filename} /></td>
-                                <td>{p.PartitionKey}</td>
-                                </tr>);
-
-            });
-
-            setPhotoRows(photoCOLs);
-          })
-          .catch(err => console.log(err));
+          getPhotos(id);
 
           
           setIsLoading(false);
@@ -136,6 +135,23 @@ export default function AddPictures() {
       body: uploaded_file
     });
   }
+
+  function setUploadStatus(filename, status)
+  {
+      var new_uploads = uploads;
+      const upload = new_uploads.find(u => u.file == filename );
+      if (upload)
+        {
+          upload.status = status;
+        }
+        else {
+          new_uploads.push( { file: filename, status: status  });
+        }
+      
+      setUploads(new_uploads);
+
+      setUploadTable();
+  }
   
   async function onFileChange(event) {
     console.log(event.target.files)
@@ -143,6 +159,7 @@ export default function AddPictures() {
     if (event.target.files.length == 0)
         return;
 
+    setIsUploading(true);
     console.log('# files to upload:', event.target.files.length);
     //
     // synchronouse file upload -> need to make this run in parallel
@@ -151,6 +168,9 @@ export default function AddPictures() {
     {
     
       const current_file = event.target.files[i];
+
+      if (!current_file.type.startsWith('image'))
+        continue;
 
       console.log('uploading: ', current_file);
       try {
@@ -169,29 +189,56 @@ export default function AddPictures() {
                           Size: current_file.size,
                           Type: current_file.type  };
 
+          setUploadStatus(current_file.name, 'Uploading');
+          
           return upload;
         })
         .then((upload) => {
 
-          console.log("upload info to aws");
+          setUploadStatus(current_file.name, 'Updating');
+          console.log("upload info to aws", current_file.name);
           return addUpload(upload)
         })
         .then((upload_response) => {
 
-          console.log("Upload info saved");
+          setUploadStatus(current_file.name, 'Completed');
+
+          console.log("Upload info saved", current_file.name);
+
+          const upload = uploads.find(u => u.status != 'Completed' );
+          if (!upload)
+          {
+            setIsUploading(false);
+            setIsAddPictures(false);
+
+            getPhotos(id);
+          }
         });
-    
-        
         
       } catch (e) {
         onError(e);
+        setIsUploading(true);
         setIsLoading(false);
       }
     }
   }
 
 
- 
+ function setUploadTable()
+ {
+    var rows = [];
+
+    uploads.map((upload, ind) => {
+
+    rows.push(<tr key={'upload' + ind}>
+                        <td>{upload.file}</td>
+                        <td>{upload.status}</td>
+                        </tr>);
+
+    });
+
+    setUploadRows(rows);
+ }
 
   var addPictures = !isAddPictures ? <Button onClick={() => setIsAddPictures(true)} variant="outline-primary">Add pictures</Button>: 
       <div>
@@ -207,6 +254,26 @@ export default function AddPictures() {
           </div>
         </div>;
 
+            
+    
+  var uploadTable = !isUploading ? null:   
+                      <div>
+                        <div style={{marginBottom: "10px"}}>
+                          Pictures currently uploading.  Please stay on the page until uploading completes.
+                        </div>
+                        <Table striped bordered hover>
+                          <thead>
+                              <tr>
+                              <th>File</th>
+                              <th>Status</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              {uploadRows}
+                              
+                          </tbody>
+                        </Table>
+                      </div>  
   return (
     <div className="NewNote">
       <h2>Album - {album.Name}</h2>
@@ -220,23 +287,12 @@ export default function AddPictures() {
     </div>
     <hr />
 
-    <Table striped bordered hover>
-        <thead>
-            <tr>
-            <th>File</th>
-            <th>PartitionKey</th>
-            </tr>
-        </thead>
-        <tbody>
-            {photoRows}
-            
-        </tbody>
-        </Table>
-
-     {addPictures}
-
-
       
+     {!isAddPictures ? <div><div>{photoRows}</div><div style={{clear: "both"}}></div></div>: null}
+      
+    <hr />
+      {addPictures}
+      {uploadTable}
     </div>
   );
 }
