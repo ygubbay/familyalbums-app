@@ -8,6 +8,7 @@ import { useAppContext } from "../libs/contextLib";
 import { Storage } from "aws-amplify";
 import { API } from "aws-amplify";
 import { Table, Button } from "react-bootstrap";
+import Thumbnail from "../components/Thumbnail";
 
 
 Object.defineProperty(Date.prototype, 'YYYYMMDDHHMMSS', {
@@ -82,7 +83,10 @@ export default function AddPictures() {
               var photoCOLs = [];
               response.map((p, ind) => {
 
-                photoCOLs.push(<div className="photo-div" key={'photo' + ind} style={{backgroundImage: "url(https://ygubbay-photo-albums-thumbnails.s3.eu-west-2.amazonaws.com/public/" + p.Filename + ")"}}></div>);
+                // this is not matching Aws conversion " " -> +, 
+                console.log("photo-div:", p.Filename);        
+                console.log("https://ygubbay-photo-albums-thumbnails.s3.eu-west-2.amazonaws.com/public/" + encodeURI(p.Filename));   
+                photoCOLs.push(<Thumbnail upload={ p } />);
             });
 
             setPhotoRows(photoCOLs);
@@ -170,9 +174,13 @@ export default function AddPictures() {
       const current_file = event.target.files[i];
 
       if (!current_file.type.startsWith('image'))
+      {
+        setUploadStatus(current_file.name, 'Not an image.  Cannot upload.');
         continue;
-
+      }
       console.log('uploading: ', current_file);
+      setUploadStatus(current_file.name, 'Uploading');
+
       try {
 
         const album_prefix = id.substring(0, 4) + "/" + id.substring(5);
@@ -182,37 +190,38 @@ export default function AddPictures() {
 
           console.log('uploaded', current_file, response);
           
-          let upload = { OriginalFilename: current_file.name, 
+          let upload = { OriginalFilename: response.name, 
                           Filename: response, 
                           AlbumKey: id,
-                          LastModifiedDate: current_file.lastModifiedDate,
-                          Size: current_file.size,
-                          Type: current_file.type  };
+                          LastModifiedDate: response.lastModifiedDate,
+                          Size: response.size,
+                          Type: response.type  };
 
-          setUploadStatus(current_file.name, 'Uploading');
+          
           
           return upload;
         })
         .then((upload) => {
 
           setUploadStatus(current_file.name, 'Updating');
-          console.log("upload info to aws", current_file.name);
+          console.log("upload info to aws", upload);
           return addUpload(upload)
         })
         .then((upload_response) => {
 
           setUploadStatus(current_file.name, 'Completed');
 
-          console.log("Upload info saved", current_file.name);
+          console.log("Upload info saved", upload_response);
 
           const upload = uploads.find(u => u.status != 'Completed' );
-          if (!upload)
-          {
-            setIsUploading(false);
-            setIsAddPictures(false);
+         // if (!upload)
+         // {
+         //   setIsUploading(false);
+         //   setIsAddPictures(false);
 
-            getPhotos(id);
-          }
+         //   getPhotos(id);
+         // }
+         getPhotos(id);
         });
         
       } catch (e) {
@@ -240,14 +249,19 @@ export default function AddPictures() {
     setUploadRows(rows);
  }
 
+
+  var chooseUploadPictures = isUploading ? null: <div>
+                                                  <Button onClick={() => setIsAddPictures(false)} variant="outline-primary">Close</Button>
+                                                      <p className="note">Note : your browser will process the zip file, don't choose a file too big !</p>
+                                                        <input type="file" id="file" name="file" multiple onChange={onFileChange} /><br />
+
+                                                </div>;
   var addPictures = !isAddPictures ? <Button onClick={() => setIsAddPictures(true)} variant="outline-primary">Add pictures</Button>: 
       <div>
         <h3>Add pictures</h3>
 
-        <Button onClick={() => setIsAddPictures(false)} variant="outline-primary">Close</Button>
-        <p className="note">Note : your browser will process the zip file, don't choose a file too big !</p>
-          <input type="file" id="file" name="file" multiple onChange={onFileChange} /><br />
 
+          {chooseUploadPictures}
           <div id="result_block" className="hidden">
             <h3>Content :</h3>
             <div id="result"></div>

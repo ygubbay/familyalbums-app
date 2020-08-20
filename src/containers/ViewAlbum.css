@@ -1,7 +1,17 @@
-div.photo-div {
+div.photo-div1 {
     float: left;
     width: 150px;
     height: 100px;
-    background-size: cover;
     margin: 10px;
+}
+
+div.photo-div2 {
+    width: 150px;
+    height: 100px;
+    background-size: contain;
+}
+
+.tiny-button {
+    width: 56px;
+    height: 30px;
 }
