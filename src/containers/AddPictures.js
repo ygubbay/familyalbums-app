@@ -1,14 +1,13 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useHistory } from "react-router-dom";
-import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import { onError } from "../libs/errorLib";
-import "./ViewAlbum.css";
 import { useAppContext } from "../libs/contextLib";
 import { Storage } from "aws-amplify";
 import { API } from "aws-amplify";
 import { Table, Button } from "react-bootstrap";
 import Thumbnail from "../components/Thumbnail";
+import ViewPhoto from "../components/ViewPhoto";
 
 
 Object.defineProperty(Date.prototype, 'YYYYMMDDHHMMSS', {
@@ -31,12 +30,13 @@ export default function AddPictures() {
   const history = useHistory();
   const [album, setAlbum] = useState([]);
   const [photos, setPhotos] = useState({});
-  const [photoRows, setPhotoRows] = useState([]);
+  const [thumbnailRows, setThumbnailRows] = useState([]);
   const [isAddPictures, setIsAddPictures] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploads, setUploads] = useState([]);
   const [uploadRows, setUploadRows] = useState([]);
-    
+  const [viewPhoto, setViewPhoto] = useState(null);
+  
 
   
   const [isLoading, setIsLoading] = useState(false);
@@ -55,6 +55,19 @@ export default function AddPictures() {
   
     return stored.key;
   }
+
+  function viewPhotoPrev()
+  {
+    if (viewPhoto > 0)
+      setViewPhoto(viewPhoto-1);
+
+  }
+
+  function viewPhotoNext()
+  {
+    if (viewPhoto < photos.length - 1)
+      setViewPhoto(viewPhoto+1);
+  }
  
   function getAlbum(partition_key) 
    {
@@ -65,6 +78,12 @@ export default function AddPictures() {
             }
         });
    }
+
+   function setPhoto(photo_index)
+   {
+      setViewPhoto(photo_index);
+   }
+
 
    function getPhotos(partition_key) 
    {
@@ -86,10 +105,10 @@ export default function AddPictures() {
                 // this is not matching Aws conversion " " -> +, 
                 console.log("photo-div:", p.Filename);        
                 console.log("https://ygubbay-photo-albums-thumbnails.s3.eu-west-2.amazonaws.com/public/" + encodeURI(p.Filename));   
-                photoCOLs.push(<Thumbnail upload={ p } />);
+                photoCOLs.push(<Thumbnail upload={ p } viewPhoto={() => setPhoto( ind ) } />);
             });
 
-            setPhotoRows(photoCOLs);
+            setThumbnailRows(photoCOLs);
           })
           .catch(err => console.log(err));
    }
@@ -175,7 +194,7 @@ export default function AddPictures() {
 
       if (!current_file.type.startsWith('image'))
       {
-        setUploadStatus(current_file.name, 'Not an image.  Cannot upload.');
+        setUploadStatus(current_file.name, 'Not an image.  Only images can be uploaded to an album.');
         continue;
       }
       console.log('uploading: ', current_file);
@@ -190,12 +209,12 @@ export default function AddPictures() {
 
           console.log('uploaded', current_file, response);
           
-          let upload = { OriginalFilename: response.name, 
+          let upload = { OriginalFilename: current_file.name, 
                           Filename: response, 
                           AlbumKey: id,
-                          LastModifiedDate: response.lastModifiedDate,
-                          Size: response.size,
-                          Type: response.type  };
+                          LastModifiedDate: current_file.lastModifiedDate,
+                          Size: current_file.size,
+                          Type: current_file.type  };
 
           
           
@@ -288,25 +307,29 @@ export default function AddPictures() {
                           </tbody>
                         </Table>
                       </div>  
+
+  var main_display = isAddPictures ? <div>
+                                      <hr />
+                                      {addPictures}
+                                      {uploadTable}
+                                    </div>: 
+                     viewPhoto > 0 ? <ViewPhoto upload={photos[viewPhoto]} 
+                                                                  prev_click={() => viewPhotoPrev() } 
+                                                                  next_click={() => viewPhotoNext() } />:
+                      <div><div>{thumbnailRows}</div><div style={{clear: "both"}}></div></div>;
   return (
     <div className="NewNote">
       <h2>Album - {album.Name}</h2>
       
       <div>
-      <div>Year: {album.Year}</div>
-      <div>Owner: {album.Owner}</div>
-      <div>Date created: {album.DateCreated}</div>
-      <div>Photos total: {photos.length}</div>
+        <div>Year: {album.Year}</div>
+        <div>Owner: {album.Owner}</div>
+        <div>Date created: {album.DateCreated}</div>
+        <div>Photos total: {photos.length}</div>
 
-    </div>
-    <hr />
-
-      
-     {!isAddPictures ? <div><div>{photoRows}</div><div style={{clear: "both"}}></div></div>: null}
-      
-    <hr />
-      {addPictures}
-      {uploadTable}
+      </div>
+      {main_display}
+    
     </div>
   );
 }

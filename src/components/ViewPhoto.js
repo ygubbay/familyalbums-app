@@ -1,20 +1,24 @@
 import React from "react";
 import { Button, Glyphicon } from "react-bootstrap";
+import "./ViewPhoto.css";
 
 
-export default function ViewPhoto({ upload }) {
+export default function ViewPhoto({ upload, prev_click, next_click }) {
 
-  const image_url = "url(https://ygubbay-photo-albums.s3.eu-west-2.amazonaws.com/public/" + encodeURI(upload.Filename);
+  const image2 = "https://ygubbay-photo-albums.s3.eu-west-2.amazonaws.com/public/" + encodeURI(upload.Filename);
 
     function view() {}
     function deleteFile() {}
+    
   return (
 
-    <div>
-        <div className="photo-div2" style={{backgroundImage: image_url + ")"}}></div>
+    <div className="view-photo-env">
+        
+        <img className="view-photo-img" src={image2} ></img>
+       
         <div style={{textAlign: "center"}}>
-            <button className="tiny-button" onClick={view}>view</button>
-            <button className="tiny-button" onClick={deleteFile}>delete</button>
+            <button className="tiny-button" onClick={prev_click}>PREV</button>
+            <button className="tiny-button" onClick={next_click}>NEXT</button>
         </div>
     </div>
   );

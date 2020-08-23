@@ -1,0 +1,9 @@
+
+.view-photo-env {
+    text-align: center;
+}
+
+img.view-photo-img {
+    max-width: 100%;
+    max-height: 600px;
+}
