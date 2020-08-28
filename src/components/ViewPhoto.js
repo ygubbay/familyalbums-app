@@ -3,7 +3,7 @@ import { Button, Glyphicon } from "react-bootstrap";
 import "./ViewPhoto.css";
 
 
-export default function ViewPhoto({ upload, prev_click, next_click }) {
+export default function ViewPhoto({ upload, prev_click, next_click, index, album_count }) {
 
   const image2 = "https://ygubbay-photo-albums.s3.eu-west-2.amazonaws.com/public/" + encodeURI(upload.Filename);
 
@@ -16,9 +16,10 @@ export default function ViewPhoto({ upload, prev_click, next_click }) {
         
         <img className="view-photo-img" src={image2} ></img>
        
-        <div style={{textAlign: "center"}}>
-            <button className="tiny-button" onClick={prev_click}>PREV</button>
-            <button className="tiny-button" onClick={next_click}>NEXT</button>
+        <div style={{textAlign: "center", marginTop: "3px"}}>
+            <div style={{display: "inline"}}>{index} of {album_count}</div>&nbsp;
+            <Button onClick={prev_click}>PREV</Button>&nbsp;
+            <Button onClick={next_click}>NEXT</Button>
         </div>
     </div>
   );

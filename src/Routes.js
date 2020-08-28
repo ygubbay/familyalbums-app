@@ -12,7 +12,7 @@ export default function Routes() {
   return (
     <Switch>
       <Route exact path="/">
-        <Home />
+        <ViewAlbums />
       </Route>
       <Route exact path="/login">
         <Login />

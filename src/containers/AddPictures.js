@@ -275,19 +275,25 @@ export default function AddPictures() {
                                                         <input type="file" id="file" name="file" multiple onChange={onFileChange} /><br />
 
                                                 </div>;
-  var addPictures = !isAddPictures ? <Button onClick={() => setIsAddPictures(true)} variant="outline-primary">Add pictures</Button>: 
-      <div>
-        <h3>Add pictures</h3>
+  var addPictures = null;
+  const viewPhotosDisplay = ((viewPhoto != null && viewPhoto >= 0) && photos.length > 0);
+  
+  if (!viewPhotosDisplay) {
+
+  
+      addPictures = !isAddPictures ? <Button onClick={() => setIsAddPictures(true)} variant="outline-primary">Add pictures</Button>: 
+                      <div>
+                        <h3>Add pictures</h3>
 
 
-          {chooseUploadPictures}
-          <div id="result_block" className="hidden">
-            <h3>Content :</h3>
-            <div id="result"></div>
-          </div>
-        </div>;
+                          {chooseUploadPictures}
+                          <div id="result_block" className="hidden">
+                            <h3>Content :</h3>
+                            <div id="result"></div>
+                          </div>
+                        </div>;
 
-            
+  }          
     
   var uploadTable = !isUploading ? null:   
                       <div>
@@ -310,13 +316,15 @@ export default function AddPictures() {
 
   var main_display = isAddPictures ? <div>
                                       <hr />
-                                      {addPictures}
+                                      
                                       {uploadTable}
                                     </div>: 
-                     viewPhoto > 0 ? <ViewPhoto upload={photos[viewPhoto]} 
-                                                                  prev_click={() => viewPhotoPrev() } 
-                                                                  next_click={() => viewPhotoNext() } />:
-                      <div><div>{thumbnailRows}</div><div style={{clear: "both"}}></div></div>;
+                     viewPhotosDisplay ? <ViewPhoto upload={photos[viewPhoto]} 
+                                                    prev_click={() => viewPhotoPrev() } 
+                                                    next_click={() => viewPhotoNext() }
+                                                    index = {viewPhoto+1}
+                                                    album_count = {photos.length} />:
+                                          <div><div>{thumbnailRows}</div><div style={{clear: "both"}}></div></div>;
   return (
     <div className="NewNote">
       <h2>Album - {album.Name}</h2>
@@ -329,6 +337,8 @@ export default function AddPictures() {
 
       </div>
       {main_display}
+      <hr />
+      {addPictures}
     
     </div>
   );

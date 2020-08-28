@@ -11,6 +11,7 @@ import { onError } from "./libs/errorLib";
 function App() {
 
   const [isAuthenticated, userHasAuthenticated] = useState(false);
+  const [userInfo, setUserInfo] = useState(null);
   const [isAuthenticating, setIsAuthenticating] = useState(true);
   const [userEmail, setUserEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -24,7 +25,8 @@ function App() {
     try {
       await Auth.currentSession()
       .then(data => {
-        console.log(data);
+        console.log("currentSession", data);
+        setUserInfo(data.idToken.payload);
         const email = data.idToken.payload.email;
         
         console.log("User: ", email);
@@ -83,10 +85,9 @@ function App() {
           </Nav>
         </Navbar.Collapse>
       </Navbar>
-          <div style={{float: "right"}}>{userEmail}</div>
+          <div className="user-info">{userInfo.given_name + ' ' + userInfo.family_name}</div>
       <AppContext.Provider
-        value={{ isAuthenticated, userHasAuthenticated, userEmail, setUserEmail }}
-      >
+        value={{ isAuthenticated, userHasAuthenticated, userInfo, setUserInfo }} >
         <Routes />
       </AppContext.Provider>
     </div>

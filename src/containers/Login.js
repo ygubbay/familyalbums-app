@@ -11,7 +11,6 @@ import "./Login.css";
 export default function Login() {
   const history = useHistory();
   const { userHasAuthenticated } = useAppContext();
-  const { setUserEmail } = useAppContext();
   const [isLoading, setIsLoading] = useState(false);
   const [fields, handleFieldChange] = useFormFields({
     email: "",
@@ -22,6 +21,13 @@ export default function Login() {
     return fields.email.length > 0 && fields.password.length > 0;
   }
 
+  async function getUserInfo()
+   {
+     const userInfo = await Auth.currentUserInfo();
+     console.log("userInfo", userInfo);
+     //setUserInfo(userInfo);
+   }
+
   async function handleSubmit(event) {
     event.preventDefault();
 
@@ -30,8 +36,9 @@ export default function Login() {
     try {
       await Auth.signIn(fields.email, fields.password);
       userHasAuthenticated(true);
-      setUserEmail(fields.email);
-      history.push("/");
+
+      await getUserInfo();
+      history.push("/albums/view");
     } catch (e) {
       onError(e);
       setIsLoading(false);

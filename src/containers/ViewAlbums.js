@@ -14,6 +14,7 @@ export default function ViewAlbums() {
   const [albumRows, setAlbumRows] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const { userEmail } = useAppContext();
+  const { userInfo } = useAppContext();
 
   useEffect(() => {
     onLoad();
@@ -22,7 +23,7 @@ export default function ViewAlbums() {
   async function onLoad() {
     try {
         console.log('onLoad');
-      await  getAlbums().then( (response) =>
+        await  getAlbums().then( (response) =>
         {
             console.log('response now');
             console.log(JSON.stringify(response));
@@ -37,7 +38,7 @@ export default function ViewAlbums() {
                                 <td>{alb.Year}</td>
                                 <td>{alb.Name}</td>
                                 <td>{alb.Owner}</td>
-                                <td><Button onClick={() => viewAlbum(alb.Partition_Key)} variant="outline-primary">view</Button>
+                                <td><Button  variant="secondary" size="sm" onClick={() => viewAlbum(alb.Partition_Key)} >view</Button>
                                     
                                 </td>
                                 </tr>);
@@ -57,8 +58,10 @@ export default function ViewAlbums() {
       }
     }
   
-    
+    console.log("userInfo", userInfo);
   }
+
+   
   
    function viewAlbum(album_id)
    {
