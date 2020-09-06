@@ -65,10 +65,14 @@ export default function ViewAlbums() {
 
    function deleteAlbum(album_id)
    {
-     return API.del("albums", "/albums/" + album_id, {
+     API.del("albums", "/albums/" + album_id, {
       headers: { "Content-Type": "application/x-www-form-urlencoded", 
       Accept: "application/json"}
+     }).then((response) => {
+        console.log(response);
+        onLoad();
      })
+     
    }
   
    function viewAlbum(album_id)
