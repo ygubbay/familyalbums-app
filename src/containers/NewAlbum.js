@@ -13,7 +13,7 @@ export default function NewNote() {
   const [album_name, setAlbumName] = useState("");
   
   const [isLoading, setIsLoading] = useState(false);
-  const { userEmail } = useAppContext();
+  const { userInfo } = useAppContext();
 
   var currentYear = new Date().getFullYear(), years = [];
   var startYear = currentYear;  
@@ -39,7 +39,7 @@ export default function NewNote() {
   
     try {
 
-      var album = { Name: album_name, Year: album_year, Owner: userEmail };  
+      var album = { Name: album_name, Year: album_year, Owner: userInfo.email };  
       createAlbum(album)
       .then((response) => {
 

@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { Table, Button } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
@@ -8,12 +8,10 @@ import { API, sectionFooterSecondaryContent } from "aws-amplify";
 import { useAppContext } from "../libs/contextLib";
 
 export default function ViewAlbums() {
-  const file = useRef(null);
-  const history = useHistory();
+   const history = useHistory();
   const [albums, setAlbums] = useState([]);
   const [albumRows, setAlbumRows] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const { userEmail } = useAppContext();
   const { userInfo } = useAppContext();
 
   useEffect(() => {
@@ -34,12 +32,16 @@ export default function ViewAlbums() {
             var albcoll = [];
             response.map((alb, ind) => {
 
+                const delButton = (alb.Owner == userInfo.email) ? 
+                                    <Button variant="secondary" size="sm" onClick={() => deleteAlbum(alb.Partition_Key)} >delete</Button>: <div></div>
+
                 albcoll.push(<tr key={'alb' + ind}>
                                 <td>{alb.Year}</td>
                                 <td>{alb.Name}</td>
                                 <td>{alb.Owner}</td>
-                                <td><Button  variant="secondary" size="sm" onClick={() => viewAlbum(alb.Partition_Key)} >view</Button>
-                                    
+                                <td>
+                                  <Button  variant="secondary" size="sm" onClick={() => viewAlbum(alb.Partition_Key)} >view</Button>
+                                  {delButton}  
                                 </td>
                                 </tr>);
 
@@ -61,7 +63,13 @@ export default function ViewAlbums() {
     console.log("userInfo", userInfo);
   }
 
-   
+   function deleteAlbum(album_id)
+   {
+     return API.del("albums", "/albums/" + album_id, {
+      headers: { "Content-Type": "application/x-www-form-urlencoded", 
+      Accept: "application/json"}
+     })
+   }
   
    function viewAlbum(album_id)
    {
