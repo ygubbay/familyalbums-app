@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { Table, Button } from "react-bootstrap";
-import LoaderButton from "../components/LoaderButton";
 import { onError } from "../libs/errorLib";
-import "./ViewAlbums.css";
-import { API, sectionFooterSecondaryContent } from "aws-amplify";
+import "./ArchivePage.css";
+import { API } from "aws-amplify";
 import { useAppContext } from "../libs/contextLib";
 
-export default function ViewAlbums() {
+export default function ArchivePage() {
    const history = useHistory();
   const [albums, setAlbums] = useState([]);
   const [albumRows, setAlbumRows] = useState([]);
@@ -21,7 +20,7 @@ export default function ViewAlbums() {
   async function onLoad() {
     try {
         console.log('onLoad');
-        await  getAlbums().then( (response) =>
+        await  getArchiveAlbums().then( (response) =>
         {
             console.log('response now');
             console.log(JSON.stringify(response));
@@ -32,8 +31,8 @@ export default function ViewAlbums() {
             var albcoll = [];
             response.map((alb, ind) => {
 
-                const archiveButton = (alb.Owner == userInfo.email) ? 
-                                    <Button variant="secondary" size="sm" onClick={() => archiveAlbum(alb.Partition_Key)} >archive</Button>: <div></div>
+                const deleteButton = (alb.Owner == userInfo.email) ? 
+                                    <Button variant="secondary" size="sm" onClick={() => archiveAlbum(alb.Partition_Key)} >delete</Button>: <div></div>
 
                 albcoll.push(<tr key={'alb' + ind}>
                                 <td>{alb.Year}</td>
@@ -41,7 +40,7 @@ export default function ViewAlbums() {
                                 <td>{alb.Owner}</td>
                                 <td>
                                   <Button  variant="secondary" size="sm" onClick={() => viewAlbum(alb.Partition_Key)} >view</Button>
-                                  {archiveButton}  
+                                  {deleteButton}  
                                 </td>
                                 </tr>);
 
@@ -80,9 +79,9 @@ export default function ViewAlbums() {
     history.push('/albums/' + album_id);
    }
 
-   function getAlbums() 
+   function getArchiveAlbums() 
    {
-        return API.get("albums", "/albums", {
+        return API.get("albums", "/albums/archive", {
             headers: { "Content-Type": "application/x-www-form-urlencoded", 
             Accept: "application/json"
             }
@@ -95,8 +94,8 @@ export default function ViewAlbums() {
   return (
 
     
-    <div className="ViewAlbums">
-      <h2>Albums</h2>
+    <div className="ArchivePage">
+      <h2>Archive</h2>
       <Table striped bordered hover>
         <thead>
             <tr>

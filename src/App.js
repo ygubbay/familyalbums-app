@@ -71,6 +71,9 @@ function App() {
                   <LinkContainer to="/albums/view">
                     <NavItem>View albums</NavItem>
                   </LinkContainer>
+                  <LinkContainer to="/albums/archive">
+                    <NavItem>Archive</NavItem>
+                  </LinkContainer>
                   <NavItem onClick={handleLogout}>Logout</NavItem>
                 </>
               : <>
