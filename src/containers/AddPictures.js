@@ -8,6 +8,7 @@ import { API } from "aws-amplify";
 import { Table, Button } from "react-bootstrap";
 import Thumbnail from "../components/Thumbnail";
 import ViewPhoto from "../components/ViewPhoto";
+import "./AddPictures.css";
 
 
 Object.defineProperty(Date.prototype, 'YYYYMMDDHHMMSS', {
@@ -33,6 +34,7 @@ export default function AddPictures() {
   const [thumbnailRows, setThumbnailRows] = useState([]);
   const [isAddPictures, setIsAddPictures] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [isDescriptionShown, setDescriptionShown] = useState(false);
   const [uploads, setUploads] = useState([]);
   const [uploadRows, setUploadRows] = useState([]);
   const [viewPhoto, setViewPhoto] = useState(null);
@@ -251,6 +253,10 @@ export default function AddPictures() {
     }
   }
 
+ function toggleDescription(showInfo)
+ {
+  setDescriptionShown(showInfo);
+ }
 
  function setUploadTable()
  {
@@ -327,15 +333,17 @@ export default function AddPictures() {
                                           <div><div>{thumbnailRows}</div><div style={{clear: "both"}}></div></div>;
   return (
     <div className="NewNote">
-      <h2>Album - {album.Name}</h2>
+      <h2>Album - {album.Name}<span className="glyphicon glyphicon-chevron-right big-arrow" style={{display: isDescriptionShown? "none": "inline" }} onClick={() => toggleDescription(true)}></span>
+                              <span className="glyphicon glyphicon-chevron-down big-arrow" style={{display: isDescriptionShown? "inline": "none" }} onClick={() => toggleDescription(false)}></span></h2>
       
-      <div>
+      {isDescriptionShown &&
+      (<div>
         <div>Year: {album.Year}</div>
         <div>Owner: {album.Owner}</div>
         <div>Date created: {album.DateCreated}</div>
         <div>Photos total: {photos.length}</div>
 
-      </div>
+      </div>)}
       {main_display}
       <hr />
       {addPictures}
