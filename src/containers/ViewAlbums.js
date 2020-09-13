@@ -21,13 +21,14 @@ export default function ViewAlbums() {
   async function onLoad() {
     try {
         console.log('onLoad');
+
+        if (userInfo == null)
+        {
+          history.push('/login');
+          return;          
+        }
         await  getAlbums().then( (response) =>
         {
-            console.log('response now');
-            console.log(JSON.stringify(response));
-            
-            console.log(response.length);
-
             setAlbums(response);
             var albcoll = [];
             response.map((alb, ind) => {
@@ -60,7 +61,6 @@ export default function ViewAlbums() {
       }
     }
   
-    console.log("userInfo", userInfo);
   }
 
    function archiveAlbum(album_id)

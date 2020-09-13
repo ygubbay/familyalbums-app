@@ -13,7 +13,6 @@ function App() {
   const [isAuthenticated, userHasAuthenticated] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
   const [isAuthenticating, setIsAuthenticating] = useState(true);
-  const [userEmail, setUserEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const history = useHistory();
 
@@ -23,15 +22,14 @@ function App() {
   
   async function onLoad() {
     try {
+
+      console.log(isAuthenticated);
       await Auth.currentSession()
       .then(data => {
         console.log("currentSession", data);
         setUserInfo(data.idToken.payload);
-        const email = data.idToken.payload.email;
-        
-        console.log("User: ", email);
+        console.log("AppLoad: userInfo", userInfo);
         userHasAuthenticated(true);
-        setUserEmail(email);
       })
       .catch(err => console.log(err));
       
@@ -42,10 +40,12 @@ function App() {
       }
     }
   
+    console.log("App: userInfo", userInfo);
     setIsAuthenticating(false);
   }
   
   async function handleLogout() {
+    setUserInfo({});
     await Auth.signOut();
   
     userHasAuthenticated(false);
@@ -88,7 +88,8 @@ function App() {
           </Nav>
         </Navbar.Collapse>
       </Navbar>
-          <div className="user-info">{userInfo.given_name + ' ' + userInfo.family_name}</div>
+      {isAuthenticated
+              ? <div className="user-info">{userInfo.given_name + ' ' + userInfo.family_name}</div>:<></>}
       <AppContext.Provider
         value={{ isAuthenticated, userHasAuthenticated, userInfo, setUserInfo }} >
         <Routes />

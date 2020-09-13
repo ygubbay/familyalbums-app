@@ -32,14 +32,14 @@ export default function ArchivePage() {
             response.map((alb, ind) => {
 
                 const deleteButton = (alb.Owner == userInfo.email) ? 
-                                    <Button variant="secondary" size="sm" onClick={() => archiveAlbum(alb.Partition_Key)} >delete</Button>: <div></div>
+                                    <Button variant="secondary" size="sm" onClick={() => deleteAlbum(alb.Partition_Key)} >delete</Button>: <div></div>
 
                 albcoll.push(<tr key={'alb' + ind}>
                                 <td>{alb.Year}</td>
                                 <td>{alb.Name}</td>
                                 <td>{alb.Owner}</td>
                                 <td>
-                                  <Button  variant="secondary" size="sm" onClick={() => viewAlbum(alb.Partition_Key)} >view</Button>
+                                  <Button  variant="secondary" size="sm" onClick={() => restoreAlbum(alb.Partition_Key)} >restore</Button>
                                   {deleteButton}  
                                 </td>
                                 </tr>);
@@ -62,9 +62,9 @@ export default function ArchivePage() {
     console.log("userInfo", userInfo);
   }
 
-   function archiveAlbum(album_id)
+   function deleteAlbum(album_id)
    {
-     API.put("albums", "/albums/archive/" + album_id, {
+     API.del("albums", "/albums/" + album_id, {
       headers: { "Content-Type": "application/x-www-form-urlencoded", 
       Accept: "application/json"}
      }).then((response) => {
@@ -73,6 +73,19 @@ export default function ArchivePage() {
      })
      
    }
+
+   function restoreAlbum(album_id)
+   {
+     API.put("albums", "/albums/restore/" + album_id, {
+      headers: { "Content-Type": "application/x-www-form-urlencoded", 
+      Accept: "application/json"}
+     }).then((response) => {
+        console.log(response);
+        onLoad();
+     })
+     
+   }
+
   
    function viewAlbum(album_id)
    {
