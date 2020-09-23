@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
+import { FormGroup, FormControl } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import { onError } from "../libs/errorLib";
 import "./NewAlbum.css";

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { Table, Button } from "react-bootstrap";
+import { Table, Button, Alert } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import { onError } from "../libs/errorLib";
 import "./ViewAlbums.css";
@@ -12,6 +12,9 @@ export default function ViewAlbums() {
   const [albums, setAlbums] = useState([]);
   const [albumRows, setAlbumRows] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [archiveTitle, setArchiveTitle] = useState('');
+  const [archiveConfirm, setArchiveConfirm] = useState(false);
+  const [archiveId, setArchiveId] = useState(null);
   const { userInfo } = useAppContext();
 
   useEffect(() => {
@@ -34,7 +37,7 @@ export default function ViewAlbums() {
             response.map((alb, ind) => {
 
                 const archiveButton = (alb.Owner == userInfo.email) ? 
-                                    <Button variant="secondary" size="sm" onClick={() => archiveAlbum(alb.Partition_Key)} >archive</Button>: <div></div>
+                                    <Button variant="secondary" size="sm" onClick={() => confirmArchive(alb.Partition_Key, alb.Name)} >archive</Button>: <div></div>
 
                 albcoll.push(<tr key={'alb' + ind}>
                                 <td>{alb.Year}</td>
@@ -63,12 +66,15 @@ export default function ViewAlbums() {
   
   }
 
-   function archiveAlbum(album_id)
+   function archiveAlbum()
    {
-     API.put("albums", "/albums/archive/" + album_id, {
+    setArchiveConfirm(false);
+     API.put("albums", "/albums/archive/" + archiveId, {
       headers: { "Content-Type": "application/x-www-form-urlencoded", 
       Accept: "application/json"}
      }).then((response) => {
+        
+        cancelArchive();
         console.log(response);
         onLoad();
      })
@@ -88,15 +94,35 @@ export default function ViewAlbums() {
             }
         });
    }
+
+  function confirmArchive(album_id, title)
+  {
+    setArchiveId(album_id);
+    setArchiveTitle(title);
+    setArchiveConfirm(true);
+  }
     
-   
+  function cancelArchive()
+  {
+    setArchiveId(null);
+    setArchiveTitle('');
+    setArchiveConfirm(false);
+  }   
   
 
   return (
 
-    
+
     <div className="ViewAlbums">
       <h2>Albums</h2>
+
+      { archiveConfirm ?  
+      <Alert key={0} variant={"warning"}>
+      
+        Archive album <b>{archiveTitle}</b> ?  Please choose <Button  variant={"primary"}  className="btn-primary" onClick={() => archiveAlbum()}>Archive</Button> or <Button variant="danger" onClick={() => cancelArchive()}  className="btn-danger">Cancel</Button>
+        
+      </Alert>: null }
+
       <Table striped bordered hover>
         <thead>
             <tr>
