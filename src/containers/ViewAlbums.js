@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { Table, Button, Alert } from "react-bootstrap";
+import { Table, Button, Alert, ButtonGroup, DropdownButton, MenuItem } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import { onError } from "../libs/errorLib";
 import "./ViewAlbums.css";
@@ -36,16 +36,31 @@ export default function ViewAlbums() {
             var albcoll = [];
             response.map((alb, ind) => {
 
-                const archiveButton = (alb.Owner == userInfo.email) ? 
-                                    <Button variant="secondary" size="sm" onClick={() => confirmArchive(alb.Partition_Key, alb.Name)} >archive</Button>: <div></div>
+                var buttons = (alb.Owner == userInfo.email) ? ['View', 'Archive', 'Rename']:['View'];
+                var menuItems = buttons.map((title, index) => {
+                    switch(title)
+                    {
+                      case 'View': 
+                        return <MenuItem onSelect={() => viewAlbum(alb.Partition_Key)}>View</MenuItem>
+                      case 'Archive': 
+                        return <MenuItem onSelect={() => confirmArchive(alb.Partition_Key, alb.Name)}>Archive</MenuItem>
+                      case 'Rename': 
+                        return <MenuItem onSelect={() => renameAlbum(alb.Partition_Key)}>Rename</MenuItem>
+                    }
+                });
 
-                albcoll.push(<tr key={'alb' + ind}>
+                const buttonGroup = <ButtonGroup>
+                <DropdownButton title="Dropdown" id="bg-nested-dropdown" title="Actions" bsStyle="info" bsSize="small">
+                  {menuItems}
+                </DropdownButton>
+              </ButtonGroup>;                                    
+
+                albcoll.push(<tr key={'alb' + ind} onClick={() => viewAlbum(alb.Partition_Key)}>
                                 <td>{alb.Year}</td>
                                 <td>{alb.Name}</td>
-                                <td>{alb.Owner}</td>
                                 <td>
-                                  <Button  variant="secondary" size="sm" onClick={() => viewAlbum(alb.Partition_Key)} >view</Button>
-                                  {archiveButton}  
+                                  
+                                  {buttonGroup}
                                 </td>
                                 </tr>);
 
@@ -64,6 +79,13 @@ export default function ViewAlbums() {
       }
     }
   
+  }
+
+  function renameAlbum(archiveId)
+  {
+
+    // todo
+    alert('not yet implemented');
   }
 
    function archiveAlbum()
@@ -128,7 +150,6 @@ export default function ViewAlbums() {
             <tr>
             <th>Year</th>
             <th>Name</th>
-            <th>Owner</th>
             <th>Actions</th>
             </tr>
         </thead>
