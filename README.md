@@ -1,22 +1,17 @@
 
 ##TODO
-If not logged in to NewAlbum -> dont allow to get to page via url 
-Multi-file upload -> upload files in parallel with max throttle
-Add dynamodb file_upload:
- partition_key=upload_albumname, 
- sub=s3_keyname, 
- status=not_uploaded
- owner
- album_name
 
-Attach albums/addpictures to come from album_name (viewalbums) 
-AddPictures -> 
-    add nice file upload feedback 
-    -> list all files in table and show status 
-    -> summary status of all uploads
-
-s3Job -> move file to album folder in another s3 bucket
-s3Job -> create thumbnail
+View albums - first pic in album
+Add people names
+Add description
+Checkout Amazon Rekognition
+Review Add pictures -> anything to improve here
+- Delete photo
+Rename album
+Fix progress bar for picture upload
+Archive page - action buttons -> should be dropdown as per ViewAlbums page
+Share photo
+Share album
 
 
 

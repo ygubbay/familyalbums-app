@@ -55,9 +55,9 @@ export default function ViewAlbums() {
                 </DropdownButton>
               </ButtonGroup>;                                    
 
-                albcoll.push(<tr key={'alb' + ind} onClick={() => viewAlbum(alb.Partition_Key)}>
-                                <td>{alb.Year}</td>
-                                <td>{alb.Name}</td>
+                albcoll.push(<tr key={'alb' + ind}>
+                                <td  onClick={() => viewAlbum(alb.Partition_Key)}>{alb.Year}</td>
+                                <td  onClick={() => viewAlbum(alb.Partition_Key)}>{alb.Name}</td>
                                 <td>
                                   
                                   {buttonGroup}

@@ -1,6 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useHistory } from "react-router-dom";
 import { onError } from "../libs/errorLib";
 import { useAppContext } from "../libs/contextLib";
 import { API } from "aws-amplify";
@@ -27,17 +26,15 @@ Object.defineProperty(Date.prototype, 'YYYYMMDDHHMMSS', {
 });
 
 export default function ViewAlbum() {
-  const file = useRef(null);
-  const history = useHistory();
   const [album, setAlbum] = useState([]);
   const [photos, setPhotos] = useState({});
+  const [delPhotoIndex, setDelPhotoIndex] = useState(null);
   const [thumbnailRows, setThumbnailRows] = useState([]);
   const [isAddPictures, setIsAddPictures] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [isDescriptionShown, setDescriptionShown] = useState(false);
   const [viewPhoto, setViewPhoto] = useState(null);
-  
-
+  const [currentAlbumPhotos, setCurrentAlbumPhotos ] = useState([]);
   
   const [isLoading, setIsLoading] = useState(false);
   const { userEmail } = useAppContext();
@@ -74,6 +71,35 @@ export default function ViewAlbum() {
       setViewPhoto(photo_index);
    }
 
+   useEffect(() => {
+
+
+    console.log('delPhotos:', delPhotoIndex);
+
+    if (delPhotoIndex !==null) {
+
+      const delIndex = delPhotoIndex;
+      const delPhoto = photos[delIndex];
+      console.log(delPhoto);
+      var photos_delete = [...photos];
+      photos_delete.splice(delIndex, 1);
+
+      API.del("albums", "/uploads/", {
+        headers: { "Content-Type": "application/x-www-form-urlencoded", 
+        Accept: "application/json"},
+        body: { AlbumId: delPhoto.PartitionKey, FileKey: delPhoto.SortKey }
+      }).then((response) => {
+        console.log(response);
+        setPhotos(photos_delete);
+        updateThumbnails(photos_delete);
+      })
+
+
+      setDelPhotoIndex(null);
+    }
+  }, [delPhotoIndex]);
+
+
 
    function getPhotos(partition_key) 
    {
@@ -88,20 +114,28 @@ export default function ViewAlbum() {
               console.log(JSON.stringify(response));
               
               setPhotos(response);
+              console.log('photos:', photos);
 
-              var photoCOLs = [];
-              response.map((p, ind) => {
+              updateThumbnails(response);
 
-                // this is not matching Aws conversion " " -> +, 
-                console.log("photo-div:", p.Filename);        
-                console.log("https://ygubbay-photo-albums-thumbnails.s3.eu-west-2.amazonaws.com/public/" + encodeURI(p.Filename));   
-                photoCOLs.push(<Thumbnail upload={ p } viewPhoto={() => setPhoto( ind ) } />);
-            });
-
-            setThumbnailRows(photoCOLs);
           })
           .catch(err => console.log(err));
    }
+
+
+  function updateThumbnails(photo_list)
+  {
+    var photoCOLs = [];
+    photo_list.map((p, ind) => {
+
+      console.log("photo-div:", p.Filename);        
+      console.log("https://ygubbay-photo-albums-thumbnails.s3.eu-west-2.amazonaws.com/public/" + encodeURI(p.Filename));   
+      photoCOLs.push(<Thumbnail key={ind} upload={ p } viewPhoto={() => setPhoto( ind ) } deletePhoto={() => setDelPhotoIndex( ind )} />);
+    });
+
+    setThumbnailRows(photoCOLs);
+
+  }
 
 
   useEffect(() => {
@@ -124,18 +158,13 @@ export default function ViewAlbum() {
           .catch(err => console.log(err));
       
           getPhotos(id);
-
-          
           setIsLoading(false);
-
     }
     catch(e) {
       if (e !== 'No current user') {
         onError(e);
       }
     }
-  
-    
   }
 
   function closeAddPictures()
