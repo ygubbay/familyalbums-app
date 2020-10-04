@@ -10,6 +10,12 @@ import ViewAlbum from "./containers/ViewAlbum";
 import ArchivePage from "./containers/ArchivePage";
 
 export default function Routes() {
+
+
+//  <Route exact path="/signup">
+//  <Signup />
+//</Route>
+
   return (
     <Switch>
       <Route exact path="/">
@@ -17,9 +23,6 @@ export default function Routes() {
       </Route>
       <Route exact path="/login">
         <Login />
-      </Route>
-      <Route exact path="/signup">
-        <Signup />
       </Route>
       <Route exact path="/albums/new">
         <NewNote />
