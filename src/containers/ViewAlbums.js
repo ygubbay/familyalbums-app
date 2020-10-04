@@ -57,8 +57,8 @@ export default function ViewAlbums() {
 
                 albcoll.push(<tr key={'alb' + ind} className="tr-viewalbum">
                                 <td className="td-viewalbum" onClick={() => viewAlbum(alb.Partition_Key)}>{alb.DateCreated.substring(0, 16)}</td>
-                                <td className="td-viewalbum" onClick={() => viewAlbum(alb.Partition_Key)}>{alb.Year}</td>
                                 <td className="td-viewalbum" onClick={() => viewAlbum(alb.Partition_Key)}>{alb.Name}</td>
+                                <td className="td-viewalbum td-year" onClick={() => viewAlbum(alb.Partition_Key)}>{alb.Year}</td>
                                 <td>
                                   
                                   {buttonGroup}
@@ -150,8 +150,8 @@ export default function ViewAlbums() {
         <thead>
             <tr>
             <th>Date</th>
-            <th>Year</th>
             <th>Name</th>
+            <th className="td-year">Year</th>
             <th>Actions</th>
             </tr>
         </thead>
