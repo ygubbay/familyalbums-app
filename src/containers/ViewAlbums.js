@@ -55,9 +55,10 @@ export default function ViewAlbums() {
                 </DropdownButton>
               </ButtonGroup>;                                    
 
-                albcoll.push(<tr key={'alb' + ind}>
-                                <td  onClick={() => viewAlbum(alb.Partition_Key)}>{alb.Year}</td>
-                                <td  onClick={() => viewAlbum(alb.Partition_Key)}>{alb.Name}</td>
+                albcoll.push(<tr key={'alb' + ind} className="tr-viewalbum">
+                                <td className="td-viewalbum" onClick={() => viewAlbum(alb.Partition_Key)}>{alb.DateCreated.substring(0, 16)}</td>
+                                <td className="td-viewalbum" onClick={() => viewAlbum(alb.Partition_Key)}>{alb.Year}</td>
+                                <td className="td-viewalbum" onClick={() => viewAlbum(alb.Partition_Key)}>{alb.Name}</td>
                                 <td>
                                   
                                   {buttonGroup}
@@ -148,6 +149,7 @@ export default function ViewAlbums() {
       <Table striped bordered hover>
         <thead>
             <tr>
+            <th>Date</th>
             <th>Year</th>
             <th>Name</th>
             <th>Actions</th>

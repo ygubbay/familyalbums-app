@@ -6,3 +6,12 @@
     height: 300px;
     font-size: 24px;
   }
+
+  .tr-viewalbum {
+    cursor: pointer;
+  }
+
+  .tr-viewalbum:hover {
+    color: rgb(146, 40, 40);
+    font-weight: bold;
+  }
