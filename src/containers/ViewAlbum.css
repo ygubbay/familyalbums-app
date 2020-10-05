@@ -4,4 +4,10 @@
     cursor: pointer;
     font-size: 18px;         
 }
-
+.thumbnail-container {
+    display: flex;
+    flex-flow: row wrap;
+     justify-content: space-between;
+     align-content: stretch;
+   
+}

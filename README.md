@@ -1,12 +1,14 @@
 
 ##TODO
 
+Upload photo - add uploader email per photo
 View albums - first pic in album
-Add people names
-Add description
+Add description per photo
+Add description per album
+Route53 - https
+
 Checkout Amazon Rekognition
 Review Add pictures -> anything to improve here
-- Delete photo
 Rename album
 Fix progress bar for picture upload
 Archive page - action buttons -> should be dropdown as per ViewAlbums page

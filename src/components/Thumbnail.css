@@ -1,15 +1,17 @@
 div.photo-div1 {
-    float: left;
-    width: 400px;
-    margin: 5px;
+    flex-basis: 24.6%;
+    margin-bottom: 20px;
 }
 
 div.photo-div2 {
-    width: 100%;
-    height: 300px;
+    height: 274px;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
+}
+
+.add-text {
+    width: 100%;
 }
 
 .tiny-button {
@@ -21,3 +23,38 @@ div.photo-div2 {
     margin-top: 2px;
     text-align: center;
 }
+
+.under-photo {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    margin-left: 2px;
+    margin-right: 2px;        
+}
+
+.photo-text {
+    color: black;
+    flex-basis: 56%;
+    overflow: hidden;
+}
+
+.photo-buttons {
+ /*   flex-basis: 34%;*/
+    
+}
+
+.holdMe {
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: flex;
+    -webkit-justify-content: center;
+    -moz-justify-content: center;
+    -ms-justify-content: center;
+    -o-justify-content: center;
+    justify-content: center;
+  }
+  .holdMe img {
+    width: 100%;
+  }

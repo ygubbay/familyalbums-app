@@ -34,7 +34,7 @@ export default function ViewAlbum() {
   const [isUploading, setIsUploading] = useState(false);
   const [isDescriptionShown, setDescriptionShown] = useState(false);
   const [viewPhoto, setViewPhoto] = useState(null);
-  const [currentAlbumPhotos, setCurrentAlbumPhotos ] = useState([]);
+  const [newComment, setNewComment ] = useState(null);
   
   const [isLoading, setIsLoading] = useState(false);
   const { userEmail } = useAppContext();
@@ -73,7 +73,6 @@ export default function ViewAlbum() {
 
    useEffect(() => {
 
-
     console.log('delPhotos:', delPhotoIndex);
 
     if (delPhotoIndex !==null) {
@@ -98,6 +97,35 @@ export default function ViewAlbum() {
       setDelPhotoIndex(null);
     }
   }, [delPhotoIndex]);
+
+  useEffect(() => {
+
+
+    if (newComment && newComment.Index !==null) {
+
+      console.log('saveComment:', newComment.Index);
+
+      const commentIndex = newComment.Index;
+      const commentPhoto = photos[commentIndex];
+      console.log(commentPhoto);
+      var photos_comment = [...photos];
+      photos_comment[commentIndex].Comment = newComment.PictureText;
+
+      API.put("albums", "/uploads/comments", {
+        headers: { "Content-Type": "application/x-www-form-urlencoded", 
+        Accept: "application/json"},
+        body: { AlbumId: commentPhoto.PartitionKey, FileKey: commentPhoto.SortKey, Comment: newComment.PictureText }
+      }).then((response) => {
+        console.log(response);
+        setPhotos(photos_comment);
+        updateThumbnails(photos_comment);
+      })
+
+
+      setNewComment(null);
+    }
+  }, [newComment]);
+
 
 
 
@@ -130,7 +158,10 @@ export default function ViewAlbum() {
 
       console.log("photo-div:", p.Filename);        
       console.log("https://ygubbay-photo-albums-thumbnails.s3.eu-west-2.amazonaws.com/public/" + encodeURI(p.Filename));   
-      photoCOLs.push(<Thumbnail key={ind} upload={ p } viewPhoto={() => setPhoto( ind ) } deletePhoto={() => setDelPhotoIndex( ind )} />);
+      photoCOLs.push(<Thumbnail key={ind} upload={ p } 
+                                viewPhoto={() => setPhoto( ind ) } 
+                                deletePhoto={() => setDelPhotoIndex( ind )} 
+                                saveComment={( comment ) => setNewComment( { Index: ind, PictureText: comment } )}/>);
     });
 
     setThumbnailRows(photoCOLs);
@@ -207,7 +238,7 @@ export default function ViewAlbum() {
                                                     next_click={() => viewPhotoNext() }
                                                     index = {viewPhoto+1}
                                                     album_count = {photos.length} />:
-                                          <div><div>{thumbnailRows}</div><div style={{clear: "both"}}></div></div>;
+                                          <div className="thumbnail-container">{thumbnailRows}</div>;
   return (
     <div className="NewNote">
       <h2>Album - {album.Name}<span className="glyphicon glyphicon-chevron-right big-arrow" style={{display: isDescriptionShown? "none": "inline" }} onClick={() => toggleDescription(true)}></span>
