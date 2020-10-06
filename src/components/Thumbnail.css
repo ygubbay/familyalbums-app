@@ -1,13 +1,5 @@
 div.photo-div1 {
-    flex-basis: 24.6%;
     margin-bottom: 20px;
-}
-
-div.photo-div2 {
-    height: 274px;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
 }
 
 .add-text {
@@ -15,8 +7,9 @@ div.photo-div2 {
 }
 
 .tiny-button {
-    width: 56px;
+    width: 33px;
     height: 30px;
+    background-color: lavender;
 }
 
 .buttons-div {
@@ -58,3 +51,31 @@ div.photo-div2 {
   .holdMe img {
     width: 100%;
   }
+
+@media (min-width: 769px) {
+    .photo-div1 {
+        flex-basis: 24.6%;
+      }
+    .holdMe img {
+        max-height: 160px;
+    }
+}
+
+@media (min-width: 501px) and (max-width: 768px) {
+    .photo-div1 {
+      flex-basis: 48%;
+    }
+    .holdMe img {
+        max-height: 248px;
+    }
+}
+@media (max-width: 500px) {
+    .photo-div1 {
+        flex-basis: 100%;
+
+    }
+    .holdMe img {
+        max-height: 303px;
+    }
+}     
+

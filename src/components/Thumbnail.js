@@ -5,7 +5,7 @@ import { Button, Alert } from "react-bootstrap";
 
 export default function Thumbnail({ upload, viewPhoto, deletePhoto, saveComment }) {
 
-  const [photoText, setPhotoText] = useState('');
+  const [photoText, setPhotoText] = useState(upload.Comment);
   const [editText, setEditText] = useState('');
   const [showText, setShowText] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -37,9 +37,9 @@ export default function Thumbnail({ upload, viewPhoto, deletePhoto, saveComment 
    </>
    :
    <>
-      <Button className="tiny-button" onClick={() => viewPhoto()} style={{ width: "40px"}}><span className="glyphicon glyphicon-eye-open" ></span></Button>
-      <Button className="tiny-button" onClick={() => setConfirmDelete(true)} style={{ width: "40px"}}><span className="glyphicon glyphicon-remove"></span></Button>
-      <Button className="tiny-button" onClick={() => {setShowText(true); setEditText(photoText);}} style={{ width: "40px"}}><span className="glyphicon glyphicon-text-width"></span></Button>
+      <Button className="tiny-button" onClick={() => viewPhoto()} style={{ width: "33px"}}><span className="glyphicon glyphicon-eye-open" ></span></Button>
+      <Button className="tiny-button" onClick={() => setConfirmDelete(true)} style={{ width: "33px"}}><span className="glyphicon glyphicon-remove"></span></Button>
+      <Button className="tiny-button" onClick={() => {setShowText(true); setEditText(photoText);}} style={{ width: "33px"}}><span className="glyphicon glyphicon-text-width"></span></Button>
     </>;
     
   return (
