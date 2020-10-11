@@ -1,5 +1,8 @@
 div.photo-div1 {
+    background: white;
     margin-bottom: 20px;
+    margin-right: 3px;
+    position: relative;
 }
 
 .add-text {
@@ -19,21 +22,28 @@ div.photo-div1 {
 
 .under-photo {
     display: flex;
+    position: relative;
     flex-flow: row wrap;
     justify-content: space-between;
     margin-left: 2px;
     margin-right: 2px;        
+    width: var(--photo-width);
 }
 
 .photo-text {
     color: black;
-    flex-basis: 56%;
+    flex-basis: 100%;
+    margin-top: 4px;
+    margin-bottom: 40px;
     overflow: hidden;
+    font-family: Lucida handwriting;
+    font-size: 10px;
 }
 
 .photo-buttons {
- /*   flex-basis: 34%;*/
-    
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
 }
 
 .holdMe {
@@ -48,34 +58,27 @@ div.photo-div1 {
     -o-justify-content: center;
     justify-content: center;
   }
-  .holdMe img {
-    width: 100%;
-  }
-
+  
 @media (min-width: 769px) {
-    .photo-div1 {
-        flex-basis: 24.6%;
-      }
     .holdMe img {
-        max-height: 160px;
+        height: 160px;
+        width: var(--photo-width)
     }
 }
 
 @media (min-width: 501px) and (max-width: 768px) {
-    .photo-div1 {
-      flex-basis: 48%;
-    }
     .holdMe img {
-        max-height: 248px;
+        height: 248px;
+        width: 300px
     }
 }
 @media (max-width: 500px) {
-    .photo-div1 {
-        flex-basis: 100%;
-
-    }
     .holdMe img {
-        max-height: 303px;
+        height: 303px;
+        width: 360px
     }
 }     
 
+:root {
+    --photo-width: 200px;
+  }

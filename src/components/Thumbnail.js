@@ -46,14 +46,16 @@ export default function Thumbnail({ upload, viewPhoto, deletePhoto, saveComment 
 
     <div className="photo-div1">
           <section className="holdMe">
-            <div style={{width: "100%"}}>
+            <div style={{width: "100%", padding: "8px", backgroundColor: "white"}}>
               <img src={image_url} alt="html5"/>
+              <div style={{"display": !showText ? "flex": "none" }} className="under-photo" >
+                <span  style={{"display": !showText ? "block": "none" }} className="photo-text">{photoText}</span>
+              </div>
+
             </div>
           </section>
-        <div style={{"display": !showText ? "flex": "none" }} className="under-photo" >
-          <span  style={{"display": !showText ? "block": "none" }} className="photo-text">{photoText}</span>
           <div className="photo-buttons">{buttons}</div>
-        </div>
+
               { confirmDelete ?  
               <div>
                 <Alert key={0} variant={"warning"}>          

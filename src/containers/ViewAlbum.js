@@ -66,6 +66,12 @@ export default function ViewAlbum() {
         });
    }
 
+
+   function setThumbnailView(photo_index)
+   {
+     setViewPhoto(null);
+   }
+
    function setPhoto(photo_index)
    {
       setViewPhoto(photo_index);
@@ -236,13 +242,15 @@ export default function ViewAlbum() {
                      viewPhotosDisplay ? <ViewPhoto upload={photos[viewPhoto]} 
                                                     prev_click={() => viewPhotoPrev() } 
                                                     next_click={() => viewPhotoNext() }
+                                                    thumbnail_click={() => setThumbnailView(viewPhoto) }
                                                     index = {viewPhoto+1}
                                                     album_count = {photos.length} />:
                                           <div className="thumbnail-container">{thumbnailRows}</div>;
   return (
-    <div className="NewNote">
-      <h2>Album - {album.Name}<span className="glyphicon glyphicon-chevron-right big-arrow" style={{display: isDescriptionShown? "none": "inline" }} onClick={() => toggleDescription(true)}></span>
-                              <span className="glyphicon glyphicon-chevron-down big-arrow" style={{display: isDescriptionShown? "inline": "none" }} onClick={() => toggleDescription(false)}></span></h2>
+    <div className="viewalbum-page">
+      <h2>{album.Name}<span className="glyphicon glyphicon-chevron-right big-arrow" style={{display: isDescriptionShown? "none": "inline" }} onClick={() => toggleDescription(true)}></span>
+                      <span className="glyphicon glyphicon-chevron-down big-arrow" style={{display: isDescriptionShown? "inline": "none" }} onClick={() => toggleDescription(false)}></span></h2>
+                              
       
       {isDescriptionShown &&
       (<div>
