@@ -34,6 +34,7 @@ export default function ViewAlbum() {
   const [isUploading, setIsUploading] = useState(false);
   const [isDescriptionShown, setDescriptionShown] = useState(false);
   const [viewPhoto, setViewPhoto] = useState(null);
+  const [viewMode, setViewMode] = useState('thumbnail');
   const [newComment, setNewComment ] = useState(null);
   
   const [isLoading, setIsLoading] = useState(false);
@@ -69,7 +70,8 @@ export default function ViewAlbum() {
 
    function setThumbnailView(photo_index)
    {
-     setViewPhoto(null);
+     setPhoto(photo_index);
+     setViewMode('thumbnail');
    }
 
    function setPhoto(photo_index)
@@ -162,10 +164,8 @@ export default function ViewAlbum() {
     var photoCOLs = [];
     photo_list.map((p, ind) => {
 
-      console.log("photo-div:", p.Filename);        
-      console.log("https://ygubbay-photo-albums-thumbnails.s3.eu-west-2.amazonaws.com/public/" + encodeURI(p.Filename));   
-      photoCOLs.push(<Thumbnail key={ind} upload={ p } 
-                                viewPhoto={() => setPhoto( ind ) } 
+      photoCOLs.push(<Thumbnail key={ind} photoIndex={ind} upload={ p } 
+                                viewPhoto={() => {setViewMode('fullphoto'); setPhoto( ind ) }} 
                                 deletePhoto={() => setDelPhotoIndex( ind )} 
                                 saveComment={( comment ) => setNewComment( { Index: ind, PictureText: comment } )}/>);
     });
@@ -174,6 +174,14 @@ export default function ViewAlbum() {
 
   }
 
+
+  useEffect(() => {
+
+    if (viewMode == 'thumbnail' && viewPhoto >= 0)
+    {
+      window.location.hash = '#' + viewPhoto;
+    }
+  }, viewMode)
 
   useEffect(() => {
     onLoad();
@@ -239,7 +247,7 @@ export default function ViewAlbum() {
   
 
   var main_display = isAddPictures ? null: 
-                     viewPhotosDisplay ? <ViewPhoto upload={photos[viewPhoto]} 
+                     viewMode=="fullphoto" ? <ViewPhoto upload={photos[viewPhoto]} 
                                                     prev_click={() => viewPhotoPrev() } 
                                                     next_click={() => viewPhotoNext() }
                                                     thumbnail_click={() => setThumbnailView(viewPhoto) }

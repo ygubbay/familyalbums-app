@@ -3,7 +3,7 @@ import "./Thumbnail.css";
 import { Button, Alert } from "react-bootstrap";
 
 
-export default function Thumbnail({ upload, viewPhoto, deletePhoto, saveComment }) {
+export default function Thumbnail({ photoIndex, upload, viewPhoto, deletePhoto, saveComment }) {
 
   const [photoText, setPhotoText] = useState(upload.Comment);
   const [editText, setEditText] = useState('');
@@ -45,6 +45,7 @@ export default function Thumbnail({ upload, viewPhoto, deletePhoto, saveComment 
   return (
 
     <div className="photo-div1">
+          <span id={photoIndex}></span>
           <section className="holdMe">
             <div style={{width: "100%", padding: "8px", backgroundColor: "white"}}>
               <img src={image_url} alt="html5"/>
