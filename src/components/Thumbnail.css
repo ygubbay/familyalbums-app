@@ -21,10 +21,7 @@ div.photo-div1 {
 }
 
 .under-photo {
-    display: flex;
     position: relative;
-    flex-flow: row wrap;
-    justify-content: space-between;
     margin-left: 2px;
     margin-right: 2px;        
     width: var(--photo-width);
@@ -46,35 +43,31 @@ div.photo-div1 {
     right: 10px;
 }
 
-.holdMe {
-    display: -webkit-flex;
-    display: -moz-flex;
-    display: -ms-flex;
-    display: -o-flex;
-    display: flex;
-    -webkit-justify-content: center;
-    -moz-justify-content: center;
-    -ms-justify-content: center;
-    -o-justify-content: center;
-    justify-content: center;
-  }
-  
+img {
+    width: 100%;
+}
+
+
+@media (min-width: 1000px) {
+    div.photo-div1 {
+        flex-basis: 19%;
+    }
+}
+
 @media (min-width: 769px) {
-    .holdMe img {
-        height: var(--photo-width * .8);
-        width: var(--photo-width)
+    div.photo-div1 {
+        flex-basis: 24%;
     }
 }
 
 @media (min-width: 501px) and (max-width: 768px) {
-    .holdMe img {
-        height: var(--photo-width * .8);
-        width: var(--photo-width)
+    div.photo-div1 {
+        flex-basis: 49%;
     }
 }
 @media (max-width: 500px) {
-    .holdMe img {
-        width: 100%
+    div.photo-div1 {
+        flex-basis: 100%;
     }
 }     
 
