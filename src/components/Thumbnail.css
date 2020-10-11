@@ -61,21 +61,20 @@ div.photo-div1 {
   
 @media (min-width: 769px) {
     .holdMe img {
-        height: 160px;
+        height: var(--photo-width * .8);
         width: var(--photo-width)
     }
 }
 
 @media (min-width: 501px) and (max-width: 768px) {
     .holdMe img {
-        height: 248px;
-        width: 300px
+        height: var(--photo-width * .8);
+        width: var(--photo-width)
     }
 }
 @media (max-width: 500px) {
     .holdMe img {
-        height: 303px;
-        width: 360px
+        width: 100%
     }
 }     
 
