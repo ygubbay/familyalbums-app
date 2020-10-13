@@ -231,20 +231,6 @@ export default function ViewAlbum() {
 
   var addPictures = null;
   const viewPhotosDisplay = ((viewPhoto != null && viewPhoto >= 0) && photos.length > 0);
-  
-  if (!viewPhotosDisplay) {
-
-  
-      addPictures = !isAddPictures ? <Button onClick={() => setIsAddPictures(true)} variant="outline-primary">Add pictures</Button>: 
-                      <AddPictures album_id={id} 
-                      isUploading={isUploading} 
-                      setIsUploading={setIsUploading} 
-                      setIsAddPictures={setIsAddPictures}
-                      closeAddPictures={closeAddPictures} />;
-
-  }          
-    
-  
 
   var main_display = isAddPictures ? null: 
                      viewMode=="fullphoto" ? <ViewPhoto upload={photos[viewPhoto]} 
@@ -256,8 +242,15 @@ export default function ViewAlbum() {
                                           <div className="thumbnail-container">{thumbnailRows}</div>;
   return (
     <div className="viewalbum-page">
-      <h2>{album.Name}<span className="glyphicon glyphicon-chevron-right big-arrow" style={{display: isDescriptionShown? "none": "inline" }} onClick={() => toggleDescription(true)}></span>
-                      <span className="glyphicon glyphicon-chevron-down big-arrow" style={{display: isDescriptionShown? "inline": "none" }} onClick={() => toggleDescription(false)}></span></h2>
+
+      <div style={{display: "flex", justifyContent: "space-between"}}>
+        <h2>{album.Name}<span className="glyphicon glyphicon-chevron-right big-arrow" style={{display: isDescriptionShown? "none": "inline" }} onClick={() => toggleDescription(true)}></span>
+                        <span className="glyphicon glyphicon-chevron-down big-arrow" style={{display: isDescriptionShown? "inline": "none" }} onClick={() => toggleDescription(false)}></span>
+        </h2>
+        <div>
+        <Button style={{marginTop: "10px"}} onClick={() => setIsAddPictures(true)} variant="outline-primary"><span style={{color: "green", fontSize: "2em"}} className="glyphicon glyphicon-plus"></span></Button>
+        </div>
+      </div>                
                               
       
       {isDescriptionShown &&
@@ -268,9 +261,15 @@ export default function ViewAlbum() {
         <div>Photos total: {photos.length}</div>
 
       </div>)}
+      {!viewPhotosDisplay && isAddPictures && 
+              (<AddPictures album_id={id} 
+                isUploading={isUploading} 
+                setIsUploading={setIsUploading} 
+                setIsAddPictures={setIsAddPictures}
+                closeAddPictures={closeAddPictures} />)
+      }
       {main_display}
-      <hr />
-      {addPictures}
+      
     
     </div>
   );

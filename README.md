@@ -1,19 +1,38 @@
 
 ##TODO
 
-Upload photo - add uploader email per photo
+View albums - based on recent albums query - paged results
+Import uploaded albums
+
+Last updated - album level - 
+
+Cover photo
+
+Upload Nana & Papa wedding anniversary
+
+
+Users - add table
+Users - last login date
+View albums - implement *New album/ *Photos added based on user.lastlogindate
+
+View albums - by Year, by Name, by Owner
+View albums - my albums
+
+Photo owner - Upload photo - add uploader email per photo,
+Photo owner - delete permissions on photo
+Private albums
+Favorite albums
+
 View albums - first pic in album
-Add description per photo
+-- Add description per photo
 Add description per album
-Route53 - https
+-- Route53 - https + domain name family-albums-app.com
 
 Checkout Amazon Rekognition
-Review Add pictures -> anything to improve here
 Rename album
-Fix progress bar for picture upload
 Archive page - action buttons -> should be dropdown as per ViewAlbums page
-Share photo
-Share album
+
+Share album - 
 
 
 

@@ -96,6 +96,7 @@ async function s3Upload(key_prefix, file) {
          if (!upload)
          {
              closeAddPictures();
+             return setAlbumUpdate();
          }
         });
         
@@ -121,6 +122,18 @@ async function s3Upload(key_prefix, file) {
      });
  
      setUploadRows(rows);
+  }
+
+   function setAlbumUpdate()
+  {
+
+    console.log('setAlbumUpdate: ', album_id);
+    return API.put("albums", "/albums/setupdate/" + album_id, {
+      headers: { "Content-Type": "application/x-www-form-urlencoded", 
+      Accept: "application/json"
+      },
+      body: {}
+    });
   }
 
   function addUpload(uploaded_file)
@@ -153,7 +166,7 @@ async function s3Upload(key_prefix, file) {
 
     var chooseUploadPictures = isUploading ? null: 
     <div>
-        <Button onClick={() => setIsAddPictures(false)} variant="outline-primary">Close</Button>
+        
 
         <p className="note">Note : your browser will process the zip file, don't choose a file too big !</p>
         <input type="file" id="file" name="file" multiple onChange={onFileChange} /><br />
@@ -181,8 +194,12 @@ var uploadTable = !isUploading ? null:
 
     return (
     <div>
-        <h3>Add pictures</h3>
 
+        <hr style={{borderTop: "1px solid black"}} />
+        <div style={{display: "flex", justifyContent: "space-between"}}>
+          <h3>Add pictures</h3>
+          <Button onClick={() => setIsAddPictures(false)} variant="outline-primary"><span style={{color: "red", fontSize: "2em"}} className="glyphicon glyphicon-remove"></span></Button>
+        </div>
 
         {chooseUploadPictures}
 

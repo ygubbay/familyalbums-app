@@ -46,13 +46,13 @@ export default function Thumbnail({ photoIndex, upload, viewPhoto, deletePhoto, 
 
     <div className="photo-div1">
           <span id={photoIndex}></span>
-            <div style={{width: "100%", padding: "8px", backgroundColor: "white"}}>
-              <img src={image_url} alt="html5"/>
-              <div style={{"display": !showText ? "flex": "none" }} className="under-photo" >
-                <span  style={{"display": !showText ? "block": "none" }} className="photo-text">{photoText}</span>
-              </div>
-
+          <div style={{width: "100%", padding: "8px", backgroundColor: "white"}}>
+            <img src={image_url} alt="html5"/>
+            <div style={{"display": !showText ? "flex": "none" }} className="under-photo" >
+              <span  style={{"display": !showText ? "block": "none" }} className="photo-text">{photoText}</span>
             </div>
+
+          </div>
           <div className="photo-buttons">{buttons}</div>
 
               { confirmDelete ?  
