@@ -1,7 +1,10 @@
 
 ##TODO
 
-View albums - based on recent albums query - paged results
+Upload photo - with owner email
+Delete photo permission - only for owner or group admin
+
+View albums - paged results
 Import uploaded albums
 
 Last updated - album level - 
@@ -9,11 +12,12 @@ Last updated - album level -
 Cover photo
 
 Upload Nana & Papa wedding anniversary
+Backup
+- manual backup
+- check restore
+- scheduled backup
 
 
-Users - add table
-Users - last login date
-View albums - implement *New album/ *Photos added based on user.lastlogindate
 
 View albums - by Year, by Name, by Owner
 View albums - my albums

@@ -32,6 +32,9 @@ export default function ViewAlbums() {
         }
         await  getAlbums().then( (response) =>
         {
+
+            let new_date = new Date(Date.now() - 12096e5);  // 2 weeks ago
+
             setAlbums(response);
             var albcoll = [];
             response.map((alb, ind) => {
@@ -55,8 +58,14 @@ export default function ViewAlbums() {
                 </DropdownButton>
               </ButtonGroup>;                                    
 
-                albcoll.push(<tr key={'alb' + ind} className="tr-viewalbum">
-                                <td className="td-viewalbum" onClick={() => viewAlbum(alb.Partition_Key)}>{alb.DateCreated.substring(0, 16)}</td>
+                var alb_update = new Date(alb.LastUpdated.substr(0, 4),
+                                          parseInt(alb.LastUpdated.substr(5, 2)) - 1,
+                                          alb.LastUpdated.substr(8, 2) );
+
+                var is_new = alb_update > new_date;
+
+                albcoll.push(<tr key={'alb' + ind} className={is_new ? "tr-viewalbum new-album" : "tr-viewalbum" }>
+                                <td className="td-viewalbum" onClick={() => viewAlbum(alb.Partition_Key)}>{is_new ? "NEW** ": ""}{alb.LastUpdated.substring(0, 16)}</td>
                                 <td className="td-viewalbum" onClick={() => viewAlbum(alb.Partition_Key)}>{alb.Name}</td>
                                 <td className="td-viewalbum td-year" onClick={() => viewAlbum(alb.Partition_Key)}>{alb.Year}</td>
                                 <td>
@@ -149,7 +158,7 @@ export default function ViewAlbums() {
       <Table striped bordered hover>
         <thead>
             <tr>
-            <th>Date</th>
+            <th>Last Updated</th>
             <th>Name</th>
             <th className="td-year">Year</th>
             <th>Actions</th>

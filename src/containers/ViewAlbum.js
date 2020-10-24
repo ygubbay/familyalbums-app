@@ -145,13 +145,8 @@ export default function ViewAlbum() {
             }
         })
         .then( (response) =>
-          {
-              console.log('getphotos response now');
-              console.log(JSON.stringify(response));
-              
+          {              
               setPhotos(response);
-              console.log('photos:', photos);
-
               updateThumbnails(response);
 
           })
@@ -229,7 +224,6 @@ export default function ViewAlbum() {
  
 
 
-  var addPictures = null;
   const viewPhotosDisplay = ((viewPhoto != null && viewPhoto >= 0) && photos.length > 0);
 
   var main_display = isAddPictures ? null: 

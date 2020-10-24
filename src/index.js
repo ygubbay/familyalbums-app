@@ -39,7 +39,9 @@ if (app)
 {
   // 1. Set up the browser history with the updated location
     // (minus the # sign)
-	const path = (/#!(\/.*)$/.exec(window.location.hash) || [])[1];
+  console.log('window.location.hash', window.location.hash);
+  const path = (/#!(\/.*)$/.exec(window.location.hash) || [])[1];
+  console.log('path', path);
 	if (path) {
 		history.replace(path);
 	}

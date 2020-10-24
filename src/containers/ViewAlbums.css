@@ -11,6 +11,11 @@
     cursor: pointer;
   }
 
+  .new-album {
+    color: green;
+    font-weight: bold;
+  }
+
   .tr-viewalbum:hover {
     color: rgb(146, 40, 40);
     font-weight: bold;

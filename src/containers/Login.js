@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { API } from "aws-amplify";
 import { Auth } from "aws-amplify";
 import { useHistory } from "react-router-dom";
 import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
@@ -29,6 +30,19 @@ export default function Login() {
      
    }
 
+
+  function setLastLoginDate(email)
+  {
+    API.put("albums", "/users/lastlogin/", {
+      headers: { "Content-Type": "application/x-www-form-urlencoded", 
+      Accept: "application/json"},
+      body: { Email: email }
+    }).then((response) => {
+      console.log(response);
+    })
+
+  }
+
   async function handleSubmit(event) {
     event.preventDefault();
 
@@ -42,6 +56,8 @@ export default function Login() {
       userHasAuthenticated(true);
 
       await getUserInfo();
+      console.log('setLastLoginDate now:');
+      setLastLoginDate(fields.email);
       history.push("/albums/view");
     } catch (e) {
       onError(e);
